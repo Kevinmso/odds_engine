@@ -16,7 +16,7 @@ func newPoissonCache(lambda float64, k int) poissonCacheKey {
 type PoissonModel struct {
 	MaxGoals      int
 	HomeAdvantage float64
-	Cache          map[poissonCacheKey]float64	
+	Cache         map[poissonCacheKey]float64	
 }
 
 func NewPoissonModel(MaxGoals int, HomeAdvantage float64) *PoissonModel {
