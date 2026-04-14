@@ -82,7 +82,7 @@ func (pm *PoissonModel) ScoreMatrix(lambdaHome, lambdaAway float64) [][] float64
 	return matrix
 }
 
-func (pm *PoissonModel) MatchOutcome([][]float64) map[string]float64 {
+func (pm *PoissonModel) MatchOutcome(matrix [][]float64) map[string]float64 {
 	outcome := map[string]float64 {
 		"home":0.0,
 		"draw":0.0,
@@ -102,4 +102,8 @@ func (pm *PoissonModel) MatchOutcome([][]float64) map[string]float64 {
 	}
 
 	return outcome
+}
+
+func (pm *PoissonModel) ProbToOdd(p float64) float64{
+	return 1.0/p
 }
