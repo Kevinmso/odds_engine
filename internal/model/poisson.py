@@ -1,0 +1,48 @@
+import math
+from dataclasses import dataclass, field
+
+@dataclass
+class PoissonModel:
+    max_goals: int
+    cache: dict[tuple[float, int], float] = field(default_factory=dict)
+
+    def calcProb(self, lmbda: float, k: int) -> float:
+        key = (round(lmbda, 4), k)
+        if key in self.cache:
+            return self.cache[key]
+
+        p = (lmbda ** k * math.exp(-lmbda)) / math.factorial(k)
+        self.cache[key] = p
+        return p
+
+    def goalDistribution(self, lmbda: float) -> list[float]:
+        probs = [self.calcProb(lmbda, k) for k in range(self.max_goals + 1)]
+        total = sum(probs)
+        return [p / total for p in probs]
+    
+    def scoreMatrix(self, lambda_home: float, lambda_away: float) -> list[list[float]]:
+        home_probs = self.goalDistribution(lambda_home)
+        away_probs = self.goalDistribution(lambda_away)
+
+        matrix = [[home_probs[i] * away_probs[j] for j in range(self.max_goals + 1)] for i in range(self.max_goals + 1)]
+        return matrix
+    
+    def matchOutcome(self, matrix: list[list[float]]) -> dict[str, float]:
+        outcome = {
+            "home":0,
+            "draw":0,
+            "away":0
+        }
+
+        for i in range(self.max_goals + 1):
+            for j in range(self.max_goals + 1):
+                if i > j:
+                    outcome["home"] += matrix[i][j]
+                elif i == j:
+                    outcome["draw"] += matrix[i][j]
+                else:
+                    outcome["away"] += matrix[i][j]
+        return outcome
+    
+    def probToOdd(self, p: float) -> float:
+        return 1.0 / p
