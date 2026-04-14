@@ -11,7 +11,8 @@ class PoissonModel:
         if key in self.cache:
             return self.cache[key]
 
-        p = (lmbda ** k * math.exp(-lmbda)) / math.factorial(k)
+        log_p = k * math.log(lmbda) - lmbda - math.lgamma(k + 1)
+        p = math.exp(log_p)
         self.cache[key] = p
         return p
 
@@ -27,11 +28,12 @@ class PoissonModel:
         matrix = [[home_probs[i] * away_probs[j] for j in range(self.max_goals + 1)] for i in range(self.max_goals + 1)]
         return matrix
     
-    def matchOutcome(self, matrix: list[list[float]]) -> dict[str, float]:
+    def matchOutcome(self, lambda_home: float, lambda_away: float) -> dict[str, float]:
+        matrix = self.scoreMatrix(lambda_home, lambda_away)
         outcome = {
-            "home":0,
-            "draw":0,
-            "away":0
+            "home": 0.0,
+            "draw": 0.0,
+            "away": 0.0,
         }
 
         for i in range(self.max_goals + 1):
