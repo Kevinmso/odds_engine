@@ -65,3 +65,41 @@ func (pm *PoissonModel) GoalDistribution(lambda float64) []float64{
 
 	return normalized
 }
+
+func (pm *PoissonModel) ScoreMatrix(lambdaHome, lambdaAway float64) [][] float64{
+	homeDist := pm.GoalDistribution(lambdaHome * pm.HomeAdvantage)
+	awayDist := pm.GoalDistribution(lambdaAway)
+
+	matrix := make([][]float64, pm.MaxGoals + 1)
+	for i:= 0; i <= pm.MaxGoals; i++ {
+		matrix[i] = make([]float64, pm.MaxGoals + 1)
+
+		for j := 0; j <= pm.MaxGoals; j++ {
+			matrix[i][j] = homeDist[i] * awayDist[j]
+		}
+	}
+
+	return matrix
+}
+
+func (pm *PoissonModel) MatchOutcome([][]float64) map[string]float64 {
+	outcome := map[string]float64 {
+		"home":0.0,
+		"draw":0.0,
+		"away":0.0,
+	}
+
+	for i := 0; i <= pm.MaxGoals; i++ {
+		for j := 0; j <= pm.MaxGoals; j++ {
+			if i > j {
+				outcome["home"] += matrix[i][j]
+			} else if i == j {
+				outcome["draw"] += matrix[i][j]
+			} else {
+				outcome["away"] += matrix[i][j]
+			}
+		}
+	}
+
+	return outcome
+}
