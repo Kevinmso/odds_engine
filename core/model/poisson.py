@@ -50,11 +50,8 @@ class PoissonModel:
         return 1.0 / p
     
     def getMatchOdds(self, lambda_home: float, lambda_away: float) -> dict[str, float]:
-        # 1. Pega as probabilidades decimais (0.0 a 1.0)
         probs = self.matchOutcome(lambda_home, lambda_away)
         
-        # 2. Converte cada probabilidade em Odd (1 / p)
-        # Usamos uma verificação simples (p > 0) para evitar erro de divisão por zero
         odds = {
             label: self.probToOdd(p) if p > 0 else float('inf') 
             for label, p in probs.items()
