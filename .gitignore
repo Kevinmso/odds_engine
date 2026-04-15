@@ -5,5 +5,7 @@
 
 /core/__pycache__/
 /core/model/__pycache__/
+/core/calculator/__pycache__/
 /data/__pycache__/
 .venv
+.DS_Store
