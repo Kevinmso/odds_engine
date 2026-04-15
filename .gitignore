@@ -2,3 +2,8 @@
 /external/data/campeonato-brasileiro-cartoes.csv
 /external/data/campeonato-brasileiro-estatisticas-full.csv
 /external/data/campeonato-brasileiro-gols.csv
+
+/core/__pycache__/
+/core/model/__pycache__/
+/data/__pycache__/
+.venv
